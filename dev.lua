@@ -56,13 +56,6 @@ ScriptTab:CreateButton({
 })
 
 -- Anti-Detection
-local function doshit()
-    --[[local oldNameCall = hookmetamethod(game, "__namecall", function(self, ...)
-        if self == game.Players.LocalPlayer and getnamecallmethod() == "Kick" then
-            return
-        end]]
-        return oldNameCall(self, ...)
-    end)
-end
+local function doshit() return nil end
 
 doshit()
