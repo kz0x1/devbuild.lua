@@ -1,3 +1,91 @@
+-- REQUIRED
+-- This basically adds a lot of UNC Functions and patches vulns.
+-- thanks to raz for this (owner of scorpion)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RazAPI/Scorpion/refs/heads/main/Debug/x64/Model/MainEnvironment.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/RazAPI/Scorpion/refs/heads/main/Debug/x64/Model/ProtectedEnvironment.lua"))()
+function getsenv(script_instance)
+	local env = getfenv(debug.info(2, 'f'))
+	return setmetatable({
+		script = script_instance,
+	}, {
+		__index = function(self, index)
+			return env[index] or rawget(self, index)
+		end,
+		__newindex = function(self, index, value)
+			xpcall(function()
+				env[index] = value
+			end, function()
+				rawset(self, index, value)
+			end)
+		end,
+	})
+end
+
+function getrunningscripts()
+    local scripts = {}
+    for _, script in ipairs(game:GetService("Players").LocalPlayer:GetDescendants()) do
+        if script:IsA("LocalScript") or script:IsA("ModuleScript") or script:IsA("Script") then
+            scripts[#scripts + 1] = script
+        end
+    end
+    return scripts
+  end
+
+  function getrunningscript()
+    return getrunningscripts
+  end
+
+  getconnections = newcclosure(function(Event) -- hi
+    assert(typeof(Event) == "RBXScriptSignal", "Argument must be a RBXScriptSignal")
+
+    local Connections = {}
+
+    local Connection = Event:Connect(function() end)
+    
+    local ConnectionInfo = {
+        ["Enabled"] = true,
+        ["ForeignState"] = false,
+        ["LuaConnection"] = true,
+        ["Function"] = function() end,
+        ["Thread"] = getrenv()["coroutine"].create(function() end),
+        ["Fire"] = function() Connection:Fire() end,
+        ["Defer"] = function() task.defer(Connection["Fire"], Connection) end,
+        ["Disconnect"] = function() Connection:Disconnect() end,
+        ["Disable"] = function() ConnectionInfo["Enabled"] = false end,
+        ["Enable"] = function() ConnectionInfo["Enabled"] = true end,
+    }
+
+    getrenv()["table"].insert(Connections, ConnectionInfo)
+
+    Connection:Disconnect()
+    return Connections
+end)
+
+function getconnection()
+    return getconnections
+end
+
+function get_connections()
+    return  getconnections
+end
+
+function getconnect()
+    return getconnections
+end
+
+-- setclipboard("https://discord.gg/VxhjCgcj")
+
+devprint = function(text)
+    print(text)
+    task.wait(.025)
+    local msg = game:GetService("CoreGui").DevConsoleMaster.DevConsoleWindow.DevConsoleUI:WaitForChild("MainView").ClientLog[tostring(#game:GetService("CoreGui").DevConsoleMaster.DevConsoleWindow.DevConsoleUI.MainView.ClientLog:GetChildren())-1].msg
+    for i, x in pairs({TextColor3 = Color3.fromRGB(69, 165, 236)}) do
+        msg[i] = x
+    end
+    msg.Parent.image.Image = "rbxasset://textures/DevConsole/Info.png"
+end
+
+
 -- Load Rayfield Library
 local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
 
