@@ -81,6 +81,25 @@ if verifyKey() then
             end
         end,
     })
+
+    -- Add LocalPlayer tab for quick access
+    local LocalPlayerTab = Window:CreateTab("LocalPlayer")
+
+    -- Add buttons for LocalPlayer functions
+    LocalPlayerTab:CreateButton({
+        Name = "WalkSpeed 100",
+        Callback = function()
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100
+        end,
+    })
+
+    LocalPlayerTab:CreateButton({
+        Name = "JumpPower 100 (2x normal jumppower)",
+        Callback = function()
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = 100
+        end,
+    })
+
 else
     Rayfield:Notify({
         Title = "Invalid Key",
